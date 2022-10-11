@@ -1,0 +1,31 @@
+version: '3.6'
+services:
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - pnet
+    restart: on-failure
+
+  web:
+    build:
+      context: ./web
+      # target: production
+    container_name: web
+    command: sh -c "yarn && yarn dev"
+    volumes:
+      - ./:/app
+    ports:
+      - 3000:3000
+    depends_on:
+      - server
+    networks:
+      - pnet
+
+networks:
+  pnet:
+    driver: bridge
